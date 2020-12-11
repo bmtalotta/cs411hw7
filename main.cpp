@@ -13,12 +13,16 @@ using std::pair;
 
 int main() {
 	vector<pair<int, int>> dataset;
+	std::cout << "creating data\n";
 	for (int i = 1; i < 10; ++i) {
 		dataset.push_back({ rand() % 20,rand() % 20 });	//used rand() because it doesnt matter if the data is truely random, i just needed to fill the points
 	}
 	std::cout << "all points:\n";
 	printData(dataset);
 	std::cout << "\n\nconvex hull points:\n";
-	convexhull(dataset);
+	vector<pair<int, int>> hull = convexHull(dataset);
+	printData(hull);
+	std::cout << "brute force same data\n";
+	printData(bruteconvexhull(dataset));
 	return 0;
 }

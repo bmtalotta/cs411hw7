@@ -9,7 +9,27 @@
 using std::vector;
 using std::pair;
 
-void convexhull(std::vector<std::pair<int, int>> data)
+std::vector<std::pair<int, int>> convexHull(std::vector<std::pair<int, int>> data)
+{
+	if (data.size() <= 5) {
+		return bruteconvexhull(data);
+	}
+	std::vector<std::pair<int, int>> left;
+	std::vector<std::pair<int, int>> right;
+	for (int i = 0; i < data.size(); i++) {
+		if (i < data.size() / 2) {
+			left.push_back(data[i]);
+		}
+		else {
+			right.push_back(data[i]);
+		}
+	}
+	std::vector<std::pair<int, int>> leftHull = convexHull(left);
+	std::vector<std::pair<int, int>> rightHull = convexHull(right);
+	return merge(leftHull,rightHull);
+}
+
+std::vector<std::pair<int, int>> bruteconvexhull(std::vector<std::pair<int, int>> data)
 {
 	vector<pair<int, int>> hull;
 	int leftmost = 0;
@@ -34,7 +54,65 @@ void convexhull(std::vector<std::pair<int, int>> data)
 		}
 		position = q;
 	} while (position != leftmost);
-	printData(hull);
+	return hull;
+}
+
+std::vector<std::pair<int, int>> merge(std::vector<std::pair<int, int>> leftHull, std::vector<std::pair<int, int>> rightHull)
+{
+	int rightmostLeftHull = 0;
+	int leftmostRightHull = 0;
+	for (int i = 0; i < leftHull.size(); i++) {
+		if (leftHull[i].first > leftHull[rightmostLeftHull].first) {
+			rightmostLeftHull = i;
+		}
+	}
+	for (auto i = 0; i < rightHull.size(); i++) {
+		if (rightHull[i].first < rightHull[leftmostRightHull].first) {
+			leftmostRightHull = i;
+		}
+	}
+	bool done = 0;
+	int curLeftHullVal = rightmostLeftHull;
+	int curRightHullVal = leftmostRightHull;
+	while (!done) {
+		done = 1;
+		while (!orientation(rightHull[curRightHullVal], leftHull[curLeftHullVal], leftHull[(curLeftHullVal + 1) % leftHull.size()])) {
+			curLeftHullVal = (curLeftHullVal + 1) % leftHull.size();
+		}
+		while (!orientation(leftHull[curLeftHullVal], rightHull[curRightHullVal], rightHull[((rightHull.size() + curRightHullVal - 1) % rightHull.size())])) {
+			curRightHullVal = (rightHull.size() + curRightHullVal - 1) % rightHull.size();
+			done = 0;
+		}
+	}
+	int upperLeft = curLeftHullVal;
+	int upperRight = curRightHullVal;
+	curLeftHullVal = rightmostLeftHull;
+	curRightHullVal = leftmostRightHull;
+	done = 0;
+	while (!done) {
+		done = 1;
+		while (!orientation(leftHull[curLeftHullVal], rightHull[curRightHullVal], rightHull[((curRightHullVal + 1) % rightHull.size())])) {
+			curRightHullVal = (curRightHullVal + 1) % rightHull.size();
+		}
+		while (!orientation(rightHull[curRightHullVal], leftHull[curLeftHullVal], leftHull[(leftHull.size() + curLeftHullVal - 1) % leftHull.size()])) {
+			curLeftHullVal = (leftHull.size() + curLeftHullVal - 1) % leftHull.size();
+			done = 0;
+		}
+	}
+	int lowerLeft = curLeftHullVal;
+	int lowerRight = curRightHullVal;
+	vector<pair<int, int>>mergedHull;
+	int pos = upperLeft;
+	while (pos != lowerLeft) {
+		pos = (pos + 1) % leftHull.size();
+		mergedHull.push_back(leftHull[pos]);
+	}
+	pos = lowerRight;
+	while (pos != upperRight) {
+		pos = (pos + 1) % rightHull.size();
+		mergedHull.push_back(rightHull[pos]);
+	}
+	return mergedHull;
 }
 
 bool orientation(std::pair<int, int> pos, std::pair<int, int> newPos, std::pair<int, int> curq)
