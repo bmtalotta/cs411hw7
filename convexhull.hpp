@@ -4,6 +4,12 @@
 
 #ifndef FILE_CONVEXHULL_H_INCLUDED
 #define FILE_CONVEXHULL_H_INCLUDED
+#include<iostream>
+#include<vector>;
+#include<utility>
+
+void convexhull(std::vector<std::pair<int, int>> data);
+int orientation(std::pair<int, int> p, std::pair<int, int> q, std::pair<int, int> r);
 
 #endif //#ifndef FILE_CONVEXHULL_H_INCLUDED
 
