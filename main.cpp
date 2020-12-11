@@ -16,10 +16,9 @@ int main() {
 	for (int i = 1; i < 10; ++i) {
 		dataset.push_back({ rand() % 20,rand() % 20 });	//used rand() because it doesnt matter if the data is truely random, i just needed to fill the points
 	}
-	for (auto i : dataset) {
-		std::cout << '(' << i.first << ", " << i.second << ")\n";
-	}
-	std::cout << "\n\n";
+	std::cout << "all points:\n";
+	printData(dataset);
+	std::cout << "\n\nconvex hull points:\n";
 	convexhull(dataset);
 	return 0;
 }

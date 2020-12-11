@@ -9,7 +9,8 @@
 #include<utility>
 
 void convexhull(std::vector<std::pair<int, int>> data);
-int orientation(std::pair<int, int> p, std::pair<int, int> q, std::pair<int, int> r);
+bool orientation(std::pair<int, int> pos, std::pair<int, int> newPos, std::pair<int, int> curq);
+void printData(std::vector<std::pair<int, int>> data);
 
 #endif //#ifndef FILE_CONVEXHULL_H_INCLUDED
 
