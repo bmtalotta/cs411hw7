@@ -27,7 +27,7 @@ void convexhull(std::vector<std::pair<int, int>> data)
 			}
 		}
 		position = q;
-	} while (position != 1);
+	} while (position != leftmost);
 	for (auto i : hull) {
 		std::cout << '(' << i.first << ", " << i.second << ")\n";
 	}
