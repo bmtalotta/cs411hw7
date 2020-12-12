@@ -4,7 +4,8 @@
 
 #include "convexhull.hpp"
 #include<iostream>
-#include<vector>;
+using std::cout;
+#include<vector>
 #include<utility>
 using std::vector;
 using std::pair;
@@ -26,6 +27,7 @@ std::vector<std::pair<int, int>> convexHull(std::vector<std::pair<int, int>> dat
 	}
 	std::vector<std::pair<int, int>> leftHull = convexHull(left);
 	std::vector<std::pair<int, int>> rightHull = convexHull(right);
+	vector<pair<int, int>> hull = leftHull;
 	return merge(leftHull,rightHull);
 }
 
@@ -48,7 +50,7 @@ std::vector<std::pair<int, int>> bruteconvexhull(std::vector<std::pair<int, int>
 		hull.push_back(data[position]);
 		q = (position + 1) % datasize;
 		for (int i = 0; i < datasize; i++) {
-			if (orientation(data[position], data[i], data[q])) {
+			if (orientation(data[position], data[i], data[q]) == -1) {
 				q = i;
 			}
 		}
@@ -59,6 +61,7 @@ std::vector<std::pair<int, int>> bruteconvexhull(std::vector<std::pair<int, int>
 
 std::vector<std::pair<int, int>> merge(std::vector<std::pair<int, int>> leftHull, std::vector<std::pair<int, int>> rightHull)
 {
+	//*********************************************************************************************
 	int rightmostLeftHull = 0;
 	int leftmostRightHull = 0;
 	for (int i = 0; i < leftHull.size(); i++) {
@@ -76,10 +79,10 @@ std::vector<std::pair<int, int>> merge(std::vector<std::pair<int, int>> leftHull
 	int curRightHullVal = leftmostRightHull;
 	while (!done) {
 		done = 1;
-		while (!orientation(rightHull[curRightHullVal], leftHull[curLeftHullVal], leftHull[(curLeftHullVal + 1) % leftHull.size()])) {
+		while (orientation(rightHull[curRightHullVal], leftHull[curLeftHullVal], leftHull[(curLeftHullVal + 1) % leftHull.size()])>=0) {
 			curLeftHullVal = (curLeftHullVal + 1) % leftHull.size();
 		}
-		while (!orientation(leftHull[curLeftHullVal], rightHull[curRightHullVal], rightHull[((rightHull.size() + curRightHullVal - 1) % rightHull.size())])) {
+		while (orientation(leftHull[curLeftHullVal], rightHull[curRightHullVal], rightHull[((rightHull.size() + curRightHullVal - 1) % rightHull.size())])<=0) {
 			curRightHullVal = (rightHull.size() + curRightHullVal - 1) % rightHull.size();
 			done = 0;
 		}
@@ -91,23 +94,26 @@ std::vector<std::pair<int, int>> merge(std::vector<std::pair<int, int>> leftHull
 	done = 0;
 	while (!done) {
 		done = 1;
-		while (!orientation(leftHull[curLeftHullVal], rightHull[curRightHullVal], rightHull[((curRightHullVal + 1) % rightHull.size())])) {
+		while (orientation(leftHull[curLeftHullVal], rightHull[curRightHullVal], rightHull[((curRightHullVal + 1) % rightHull.size())])>=0) {
 			curRightHullVal = (curRightHullVal + 1) % rightHull.size();
 		}
-		while (!orientation(rightHull[curRightHullVal], leftHull[curLeftHullVal], leftHull[(leftHull.size() + curLeftHullVal - 1) % leftHull.size()])) {
+		while (orientation(rightHull[curRightHullVal], leftHull[curLeftHullVal], leftHull[(leftHull.size() + curLeftHullVal - 1) % leftHull.size()])<=0) {
 			curLeftHullVal = (leftHull.size() + curLeftHullVal - 1) % leftHull.size();
 			done = 0;
 		}
 	}
 	int lowerLeft = curLeftHullVal;
 	int lowerRight = curRightHullVal;
+
 	vector<pair<int, int>>mergedHull;
 	int pos = upperLeft;
+	mergedHull.push_back(leftHull[pos]);
 	while (pos != lowerLeft) {
 		pos = (pos + 1) % leftHull.size();
 		mergedHull.push_back(leftHull[pos]);
 	}
 	pos = lowerRight;
+	mergedHull.push_back(rightHull[pos]);
 	while (pos != upperRight) {
 		pos = (pos + 1) % rightHull.size();
 		mergedHull.push_back(rightHull[pos]);
@@ -115,10 +121,15 @@ std::vector<std::pair<int, int>> merge(std::vector<std::pair<int, int>> leftHull
 	return mergedHull;
 }
 
-bool orientation(std::pair<int, int> pos, std::pair<int, int> newPos, std::pair<int, int> curq)
+int orientation(std::pair<int, int> pos, std::pair<int, int> newPos, std::pair<int, int> curq)
 {
 	int val = (newPos.second - pos.second) * (curq.first - newPos.first) - (newPos.first - pos.first) * (curq.second - newPos.second);
-	return val < 0;
+	if (val == 0)
+		return 0;
+	if (val > 0)
+		return 1;
+	else
+		return -1;
 }
 
 void printData(std::vector<std::pair<int, int>> data)
