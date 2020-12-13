@@ -8,9 +8,9 @@
 #include<vector>
 #include<utility>
 
-std::vector<std::pair<int, int>> convexHull(std::vector<std::pair<int, int>> data);
-std::vector<std::pair<int, int>> bruteconvexhull(std::vector<std::pair<int, int>> data);
-std::vector<std::pair<int, int>> merge(std::vector<std::pair<int, int>> leftHull, std::vector<std::pair<int, int>> rightHull);
+std::vector<std::pair<int, int>> convexHull(std::vector<std::pair<int, int>> &data);
+std::vector<std::pair<int, int>> bruteconvexhull(std::vector<std::pair<int, int>> &data);
+std::vector<std::pair<int, int>> merge(std::vector<std::pair<int, int>> &leftHull, std::vector<std::pair<int, int>> &rightHull);
 int orientation(std::pair<int, int> pos, std::pair<int, int> newPos, std::pair<int, int> curq);
 void printData(std::vector<std::pair<int, int>> data);
 

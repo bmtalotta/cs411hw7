@@ -19,10 +19,11 @@ bool uniq_pair(const pair<int,int> & p1, const pair<int,int> &p2) {
 }
 
 int main() {
+	//make data
 	vector<pair<int, int>> dataset;
 	std::cout << "creating data\n";
 	auto start = std::chrono::high_resolution_clock::now();
-	for (int i = 1; i < 165; ++i) {
+	for (int i = 1; i < 100; ++i) {
 		dataset.push_back({ rand()%100,rand()%100});	//used rand() because it doesnt matter if the data is truely random, i just needed to fill the points
 	}
 	
@@ -32,13 +33,8 @@ int main() {
 	auto stop = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 	std::cout << "Time to create data: " << duration.count() << " microseconds" << std::endl;
-	
-	std::cout << "\n\nconvex hull points:\n";
-	start = std::chrono::high_resolution_clock::now();
-	vector<pair<int, int>> hull = convexHull(dataset);
-	stop = std::chrono::high_resolution_clock::now();
-	duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-	printData(hull);
+
+	//brute force
 	std::cout << "Time to run: " << duration.count() << " microseconds" << std::endl;
 	std::cout << "brute force same data\n";
 	start = std::chrono::high_resolution_clock::now();
@@ -46,5 +42,14 @@ int main() {
 	stop = std::chrono::high_resolution_clock::now();
 	duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 	std::cout << "Time to run: " << duration.count() << " microseconds"<< std::endl;
+
+	// CD
+	std::cout << "\n\nconvex hull points:\n";
+	start = std::chrono::high_resolution_clock::now();
+	vector<pair<int, int>> hull = convexHull(dataset);
+	stop = std::chrono::high_resolution_clock::now();
+	duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+	printData(hull);
+	std::cout << "Time to run: " << duration.count() << " microseconds" << std::endl;
 	return 0;
 }

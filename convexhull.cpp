@@ -5,12 +5,14 @@
 #include "convexhull.hpp"
 #include<iostream>
 using std::cout;
+using std::endl;
 #include<vector>
 #include<utility>
 using std::vector;
 using std::pair;
 #include<algorithm>
-std::vector<std::pair<int, int>> convexHull(std::vector<std::pair<int, int>> data)
+
+std::vector<std::pair<int, int>> convexHull(std::vector<std::pair<int, int>> &data)
 {
 	if (data.size() <= 5) {
 		return bruteconvexhull(data);
@@ -18,6 +20,7 @@ std::vector<std::pair<int, int>> convexHull(std::vector<std::pair<int, int>> dat
 	std::vector<std::pair<int, int>> left;
 	std::vector<std::pair<int, int>> right;
 	for (int i = 0; i < data.size(); i++) {
+		//cout << "starter for loop" << endl;
 		if (i < data.size() / 2) {
 			left.push_back(data[i]);
 		}
@@ -30,7 +33,7 @@ std::vector<std::pair<int, int>> convexHull(std::vector<std::pair<int, int>> dat
 	return merge(leftHull,rightHull);
 }
 
-std::vector<std::pair<int, int>> bruteconvexhull(std::vector<std::pair<int, int>> data)
+std::vector<std::pair<int, int>> bruteconvexhull(std::vector<std::pair<int, int>> &data)
 {
 	vector<pair<int, int>> hull;
 	int leftmost = 0;
@@ -49,7 +52,7 @@ std::vector<std::pair<int, int>> bruteconvexhull(std::vector<std::pair<int, int>
 		hull.push_back(data[position]);
 		q = (position + 1) % datasize;
 		for (int i = 0; i < datasize; i++) {
-			if (orientation(data[position], data[i], data[q]) == -1) {
+			if (orientation(data[position], data[i], data[q]) < 0) {
 				q = i;
 			}
 		}
@@ -58,14 +61,12 @@ std::vector<std::pair<int, int>> bruteconvexhull(std::vector<std::pair<int, int>
 	return hull;
 }
 
-std::vector<std::pair<int, int>> merge(std::vector<std::pair<int, int>> leftHull, std::vector<std::pair<int, int>> rightHull)
+std::vector<std::pair<int, int>> merge(std::vector<std::pair<int, int>> &leftHull, std::vector<std::pair<int, int>> &rightHull)
 {
 
 	int rightmostLeftHull = 0;
 	int leftmostRightHull = 0;
-	//printData(leftHull);
-//	cout << std::endl;
-	//printData(rightHull);
+	
 	for (int i = 0; i < leftHull.size(); i++) {
 		if (leftHull[i].first > leftHull[rightmostLeftHull].first) {
 			rightmostLeftHull = i;
@@ -76,6 +77,7 @@ std::vector<std::pair<int, int>> merge(std::vector<std::pair<int, int>> leftHull
 			leftmostRightHull = i;
 		}
 	}
+
 
 	bool done = 0;
 	int curLeftHullVal = rightmostLeftHull;
@@ -130,12 +132,7 @@ int orientation(std::pair<int, int> pos, std::pair<int, int> newPos, std::pair<i
 {
 	int val = (newPos.second - pos.second) * (curq.first - newPos.first) - (newPos.first - pos.first) * (curq.second - newPos.second);
 
-	if (val == 0)
-		return 0;
-	if (val > 0)
-		return 1;
-	else
-		return -1;
+	return val;
 }
 
 void printData(std::vector<std::pair<int, int>> data)
